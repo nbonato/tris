@@ -1,0 +1,10 @@
+#container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+.cell {
+    border: 1px solid black;
+    height: 4em;
+    width: 4em;
+}
