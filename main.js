@@ -3,34 +3,55 @@ let container = document.getElementById("container");
 const gameBoard = (() => {
     // create a board which is an array of 9 undefined
     const board = Array(9);
-    board[2] = "x";
 
-    /* empty() checks the board array, if the indexed element is
-    undefined, it says the cell is empty, otherwise it says it isn't */
+    /* empty() checks the board array, if the clicked cell is
+    undefined, it says the cell is empty, otherwise it says what is in it */
     const empty = (index) => {
-        if (board[index]) {
-            return "not empty"
+        if ((board[index] == "x" | board[index] == "o")) {
+            return false;
         };
-        return "empty";
+        return true;
     };
-
     // returning everything into an object
     return {board, empty};
 })();
-
-
-// refresh generates the cells (divs) based on gameBoard.board
-function refresh() {for (let item of gameBoard.board) {
-    let cell = document.createElement("div");
-    cell.classList.add("cell");
-
-    // checking for item's existence, every undefined results in an empty cell
-    if (!item) {
-        cell.textContent = "empty";
-    } else if (item === "x") {
-        cell.textContent = "x";
-    } else {
-        cell.textContent = "o";
+ 
+const player = (name, symbol) => {
+    const playerName = () => {
+        console.log(name);
     };
-    container.appendChild(cell);
-}};
+    const mark = (index) => {
+        if (gameBoard.empty(index)) {
+            gameBoard.board[index] = symbol;
+            game.render();
+        };     
+    };
+    return {playerName, mark};
+};
+
+const game = (() => {
+    const render = () => {
+        container.innerHTML = "";
+        for (let [index, item] of gameBoard.board.entries()) {
+            let cell = gameBoardCell(item, index).cell;
+            container.appendChild(cell);
+    }};
+    const player1 = player("p1", "x");
+    const player2 = player("p2", "o");
+    let currentPlayer = player1;
+
+    return {render, currentPlayer, player1, player2, switchPlayers};
+})();
+
+const gameBoardCell = (content, position) => {
+    const cell = document.createElement("div");
+    cell.classList.add("cell");
+    cell.textContent = content;
+    cell.dataset.position = position;
+    cell.addEventListener("click", () => {
+        game.currentPlayer.mark(position);
+    });
+    return{cell};
+};
+ 
+game.render();
