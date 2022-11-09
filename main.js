@@ -1,4 +1,5 @@
 let container = document.getElementById("container");
+let resultDisplay = document.getElementById("result");
 let turn = 0;
 const gameBoard = (() => {
     // create a board which is an array of 9 undefined
@@ -7,7 +8,7 @@ const gameBoard = (() => {
     /* empty() checks the board array, if the clicked cell is
     undefined, it says the cell is empty, otherwise it says what is in it */
     const empty = (index) => {
-        if ((board[index] == "x" | board[index] == "o")) {
+        if ((board[index] == player1.symbol | board[index] == player2.symbol)) {
             return false;
         };
         return true;
@@ -71,7 +72,9 @@ const player = (name, symbol) => {
             turn ++;
             if (turn > 4) {
                 if(gameBoard.checkWin(index, currentPlayer)) {
-                    console.log("Victory");
+                    game.over(`Victory for ${currentPlayer.playerName}`);
+                } else if (turn === 9) {
+                    game.over("Draw!");
                 };
             };
             game.switchPlayers();
@@ -81,8 +84,8 @@ const player = (name, symbol) => {
     return {playerName, mark, active, symbol};
 };
 
-const player1 = player("p1", "x");
-const player2 = player("p2", "o");
+const player1 = player("p1", "X");
+const player2 = player("p2", "O");
 let currentPlayer = player1;
 
 
@@ -101,14 +104,18 @@ const game = (() => {
         };
     };
 
-
-    return {render, switchPlayers};
+    const over = () => {
+        resultDisplay.textContent = `Victory for ${currentPlayer.playerName}`;
+    };
+    return {render, switchPlayers, over};
 })();
 
 const gameBoardCell = (content, position) => {
     const cell = document.createElement("div");
+    const cellText = document.createElement("p");
+    cell.appendChild(cellText);
     cell.classList.add("cell");
-    cell.textContent = content;
+    cellText.textContent = content;
     cell.dataset.position = position;
     cell.addEventListener("click", () => {
         currentPlayer.mark(position);

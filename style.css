@@ -2,9 +2,19 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
+    width: 12em;
 }
 .cell {
     border: 1px solid black;
     height: 4em;
     width: 4em;
+    display: flex;
+    margin: auto;
+}
+
+.cell p {
+    font-size: 2em;
+    font-weight: 700;
+    text-align: center;
+    margin: auto;
 }
