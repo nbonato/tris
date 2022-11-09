@@ -12,22 +12,28 @@ const gameBoard = (() => {
         };
         return true;
     };
+
+
     // returning everything into an object
     return {board, empty};
 })();
  
 const player = (name, symbol) => {
-    const playerName = () => {
-        console.log(name);
-    };
+    const playerName = name;
     const mark = (index) => {
         if (gameBoard.empty(index)) {
             gameBoard.board[index] = symbol;
             game.render();
         };     
     };
-    return {playerName, mark};
+    const active = 1;
+    return {playerName, mark, active};
 };
+
+const player1 = player("p1", "x");
+const player2 = player("p2", "o");
+let currentPlayer = player1;
+
 
 const game = (() => {
     const render = () => {
@@ -35,12 +41,17 @@ const game = (() => {
         for (let [index, item] of gameBoard.board.entries()) {
             let cell = gameBoardCell(item, index).cell;
             container.appendChild(cell);
-    }};
-    const player1 = player("p1", "x");
-    const player2 = player("p2", "o");
-    let currentPlayer = player1;
+    }};    
+    const switchPlayers = () => {
+        if (currentPlayer.playerName == "p1") {
+            currentPlayer = player2;
+        } else {
+            currentPlayer = player1;
+        };
+    };
 
-    return {render, currentPlayer, player1, player2, switchPlayers};
+
+    return {render, switchPlayers};
 })();
 
 const gameBoardCell = (content, position) => {
@@ -49,9 +60,10 @@ const gameBoardCell = (content, position) => {
     cell.textContent = content;
     cell.dataset.position = position;
     cell.addEventListener("click", () => {
-        game.currentPlayer.mark(position);
+        currentPlayer.mark(position);
+        game.switchPlayers();
     });
     return{cell};
 };
- 
+
 game.render();
