@@ -104,8 +104,8 @@ const game = (() => {
         };
     };
 
-    const over = () => {
-        resultDisplay.textContent = `Victory for ${currentPlayer.playerName}`;
+    const over = (message) => {
+        resultDisplay.textContent = message;
     };
     return {render, switchPlayers, over};
 })();
