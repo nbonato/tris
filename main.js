@@ -1,5 +1,8 @@
 let container = document.getElementById("container");
 let resultDisplay = document.getElementById("result");
+let player1Name = document.getElementById("name1");
+let player2Name = document.getElementById("name2");
+let nameForm = document.getElementById("name-form");
 let turn = 0;
 const gameBoard = (() => {
     // create a board which is an array of 9 undefined
@@ -84,8 +87,8 @@ const player = (name, symbol) => {
     return {playerName, mark, active, symbol};
 };
 
-const player1 = player("p1", "X");
-const player2 = player("p2", "O");
+const player1 = player(player1Name.value, "X");
+const player2 = player(player2Name.value, "O");
 let currentPlayer = player1;
 
 
@@ -97,7 +100,7 @@ const game = (() => {
             container.appendChild(cell);
     }};    
     const switchPlayers = () => {
-        if (currentPlayer.playerName == "p1") {
+        if (currentPlayer.playerName == player1Name.value) {
             currentPlayer = player2;
         } else {
             currentPlayer = player1;
@@ -106,6 +109,7 @@ const game = (() => {
 
     const over = (message) => {
         resultDisplay.textContent = message;
+        nameForm.reset();
     };
     return {render, switchPlayers, over};
 })();
@@ -123,4 +127,8 @@ const gameBoardCell = (content, position) => {
     return{cell};
 };
 
-game.render();
+nameForm.addEventListener("submit", (event) => {
+    nameForm.style.display = "none";
+    event.preventDefault();
+    game.render();
+});
