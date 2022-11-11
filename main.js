@@ -3,6 +3,7 @@ let resultDisplay = document.getElementById("result");
 let player1Name = document.getElementById("name1");
 let player2Name = document.getElementById("name2");
 let nameForm = document.getElementById("name-form");
+let playAgain = document.getElementById("play-again");
 let turn = 0;
 const gameBoard = (() => {
     // create a board which is an array of 9 undefined
@@ -11,10 +12,10 @@ const gameBoard = (() => {
     /* empty() checks the board array, if the clicked cell is
     undefined, it says the cell is empty, otherwise it says what is in it */
     const empty = (index) => {
-        if ((board[index] == player1.symbol | board[index] == player2.symbol)) {
-            return false;
+        if ((board[index] != player1.symbol | board[index] != player2.symbol)) {
+            return true;
         };
-        return true;
+        return false;
     };
     const checkWin = (index, player) => {
         let win = (Array(3).fill(player.symbol)).toString();
@@ -48,12 +49,12 @@ const gameBoard = (() => {
         let topLeft = [0,4,8].map(i=>board[i]).toString()
         let topRight = [2,4,6].map(i=>board[i]).toString()
         if (index == 4) {
-            if (win == topLeft || win == topRight) {
+            if (win == topLeft || win == topRight) {    
                 return true;
             };           
         } else if (index == 0 || index == 8) {
             dia = topLeft;
-        } else {
+        } else if (index == 2 || index == 6){
             dia = topRight;
         };
 
@@ -83,16 +84,19 @@ const player = (name, symbol) => {
             game.switchPlayers();
         };     
     };
-    const active = 1;
-    return {playerName, mark, active, symbol};
+    return {playerName, mark, symbol};
 };
-
-const player1 = player(player1Name.value, "X");
-const player2 = player(player2Name.value, "O");
-let currentPlayer = player1;
 
 
 const game = (() => {
+    const assignPlayers = () => {
+        let player1 = player(player1Name.value, "X");
+        let player2 = player(player2Name.value, "O");
+        let currentPlayer = player1;
+        return {player1, player2, currentPlayer};
+    };
+    
+    
     const render = () => {
         container.innerHTML = "";
         for (let [index, item] of gameBoard.board.entries()) {
@@ -109,9 +113,19 @@ const game = (() => {
 
     const over = (message) => {
         resultDisplay.textContent = message;
-        nameForm.reset();
+        playAgain.style.display = "block";
     };
-    return {render, switchPlayers, over};
+
+    const restart = ()  => {
+        nameForm.reset();
+        nameForm.style.display = "block";
+        gameBoard.board = Array(9);
+        container.innerHTML = "";
+        playAgain.style.display = "none";
+        resultDisplay.innerHTML = "";
+        turn = 0;  
+    };
+    return {assignPlayers, render, switchPlayers, over, restart};
 })();
 
 const gameBoardCell = (content, position) => {
@@ -131,4 +145,9 @@ nameForm.addEventListener("submit", (event) => {
     nameForm.style.display = "none";
     event.preventDefault();
     game.render();
+    player1 = game.assignPlayers().player1;
+    player2 = game.assignPlayers().player2;
+    currentPlayer = game.assignPlayers().currentPlayer;
 });
+
+playAgain.addEventListener("click", () => {game.restart()});
